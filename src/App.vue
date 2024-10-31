@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { TresCanvas } from '@tresjs/core'
 import { OrbitControls } from '@tresjs/cientos'
-import CakeModel from './model/CakeModel/CakeModel.vue'
 import PlaneModel from './model/PlaneModel.vue'
+import LogoModel from './model/LogoModel.vue'
 
 const sizesCanvas = {
     width: window.innerWidth,
@@ -21,7 +21,55 @@ function animateScroll(e: WheelEvent) {
 window.addEventListener('wheel', (e) => {
     animateScroll(e)
 })
+
+const articles = [
+  {
+    title: '1. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '2. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '3. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '4. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '5. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '6. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '7. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '8. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '9. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '10. This is 5 word title',
+    image: './model/test-image.jpg',
+  },
+  {
+    title: '11. This is 5 word title',
+    image: './model/test-image.jpg',
+  }
+]
 </script>
+
 
 <template>
     <header class="logo">
@@ -32,16 +80,20 @@ window.addEventListener('wheel', (e) => {
 
     <main>
       <TresCanvas clear-color="#82DBC5" window-size>
-        <TresPerspectiveCamera :position="[0, 0, -5]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
+        <TresGridHelper :size="100" :divisions="100" />
+
+        <TresPerspectiveCamera :position="[0, 1, -4]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
         <TresAmbientLight :intensity="1.5"/>
         <OrbitControls :enabled="false" :enableZoom="false" />
 
         <Suspense>
-          <CakeModel :scrollI="scrollI" />
+          <LogoModel :scrollI="scrollI" />
         </Suspense>
 
+        <Suspense v-for="(article, index) in articles" :key="index">
+          <PlaneModel :index="index" :article="article" :u-scroll-i="scrollI"/>
+        </Suspense>
 
-        <PlaneModel v-for="i in 12" :key="i" :index="i" :u-scroll-i="scrollI"/>
       </TresCanvas>
     </main>
 

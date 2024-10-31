@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { computedAsync } from '@vueuse/core'
-
+import { ref } from 'vue'
 import { TresCanvas } from '@tresjs/core'
-import { OrbitControls, useProgress } from '@tresjs/cientos'
-
+import { OrbitControls } from '@tresjs/cientos'
 import CakeModel from './model/CakeModel/CakeModel.vue'
-import CandleModel from './model/CakeModel/CandleModel.vue'
+import PlaneModel from './model/PlaneModel.vue'
 
-import LoadingScreen from './components/LoadingScreen.vue'
-import MusicPlayer from './components/MusicPlayer.vue'
+const sizesCanvas = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
 
-// const download = computedAsync(async () => {
-//   return await useProgress();
-// })
+const scrollI = ref(0.0)
 
-const polarAngle = Math.PI/4
+function animateScroll(e: WheelEvent) {
+    const deltaY = e.deltaY
+    if (deltaY > 0) scrollI.value++
+    else if (deltaY < 0 && scrollI.value > 0) scrollI.value--
+}
+
+window.addEventListener('wheel', (e) => {
+    animateScroll(e)
+})
 </script>
 
 <template>
@@ -25,25 +31,17 @@ const polarAngle = Math.PI/4
     </header>
 
     <main>
-      <LoadingScreen />
-
-      <MusicPlayer />
-
       <TresCanvas clear-color="#82DBC5" window-size>
-        <TresPerspectiveCamera :position="[10, 10, 0]" />
-        <TresAmbientLight :intensity="1" />
-        <OrbitControls :enableZoom="false" :maxPolarAngle="polarAngle" :minPolarAngle="polarAngle" />
-        <Suspense>
-          <CandleModel :position="[-2, 1.5, -0.25]" />
-        </Suspense>
+        <TresPerspectiveCamera :position="[0, 0, -5]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
+        <TresAmbientLight :intensity="1.5"/>
+        <OrbitControls :enabled="false" :enableZoom="false" />
 
         <Suspense>
-          <CandleModel :position="[-2, 1.5, 0.25]" />
+          <CakeModel :scrollI="scrollI" />
         </Suspense>
 
-        <Suspense>
-          <CakeModel />
-        </Suspense>
+
+        <PlaneModel v-for="i in 12" :key="i" :index="i" :u-scroll-i="scrollI"/>
       </TresCanvas>
     </main>
 
@@ -70,8 +68,9 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
+  max-height: 100vh;
+  max-width: 100vw;
+  overflow: hidden;
 }
 #app {
   height: 100%;

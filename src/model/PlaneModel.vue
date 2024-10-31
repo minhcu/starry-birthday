@@ -15,8 +15,8 @@ const props = defineProps({
 
 // Plane Position
 const position = shallowReactive({
-  x: props.index - 14.2,
-  y: - Math.cos(props.index) * Math.PI,
+  y: props.index - 14.2,
+  x: - Math.cos(props.index) * Math.PI,
   z: - Math.sin(props.index) * Math.PI,
 })
 

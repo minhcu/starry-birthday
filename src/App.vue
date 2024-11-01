@@ -4,6 +4,7 @@ import { TresCanvas } from '@tresjs/core'
 import { OrbitControls } from '@tresjs/cientos'
 import PlaneModel from './model/PlaneModel.vue'
 import LogoModel from './model/LogoModel.vue'
+import * as Hammer from 'hammerjs'
 
 const sizesCanvas = {
     width: window.innerWidth,
@@ -11,14 +12,27 @@ const sizesCanvas = {
 }
 
 const scrollI = ref(0.0)
-function animateScroll(e: WheelEvent) {
-    const deltaY = e.deltaY
+function animateScroll(deltaY: number) {
     if (deltaY > 0) scrollI.value++
     else if (deltaY < 0 && scrollI.value > 0) scrollI.value--
 }
 
 window.addEventListener('wheel', (e) => {
-    animateScroll(e)
+    animateScroll(e.deltaY)
+})
+
+// TODO: Pan speed
+Hammer.default(window).on('pan', (e: any) => {
+    switch (e.additionalEvent) {
+        case 'panleft':
+            animateScroll(1)
+            break
+        case 'panright':
+            animateScroll(-1)
+            break
+        default:
+            break
+    }
 })
 
 const articles = [

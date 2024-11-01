@@ -17,12 +17,12 @@ function animateScroll(deltaY: number) {
     else if (deltaY < 0 && scrollI.value > 0) scrollI.value--
 }
 
+// TODO: Speed
 window.addEventListener('wheel', (e) => {
     animateScroll(e.deltaY)
 })
-
-// TODO: Pan speed
-Hammer.default(window).on('pan', (e: any) => {
+Hammer.default(window)
+.on('pan', (e: any) => {
     switch (e.additionalEvent) {
         case 'panleft':
             animateScroll(1)
@@ -82,7 +82,7 @@ const articles = [
   }
 ]
 
-
+const color = ref('#333')
 </script>
 
 
@@ -93,8 +93,13 @@ const articles = [
       </a>
     </header>
 
+    <div class="color">
+      <label for="color">Edit background color here:</label>
+      <input id="color" type="color" v-model="color">
+    </div>
+
     <main>
-      <TresCanvas clear-color="#82DBC5" window-size>
+      <TresCanvas :clear-color="color" window-size>
         <TresGridHelper :size="100" :divisions="100" />
 
         <TresPerspectiveCamera :position="[0, 1, -5]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
@@ -141,5 +146,12 @@ body {
 #app {
   height: 100%;
   width: 100%;
+}
+.color {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  background: #fff;
 }
 </style>

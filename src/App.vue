@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { TresCanvas } from '@tresjs/core'
-import { OrbitControls } from '@tresjs/cientos'
+import { ref, watch } from 'vue'
+import { TresCanvas, useLoader } from '@tresjs/core'
+import { Environment, OrbitControls } from '@tresjs/cientos'
 import PlaneModel from './model/PlaneModel.vue'
 import LogoModel from './model/LogoModel.vue'
 import * as Hammer from 'hammerjs'
+import { computedAsync } from '@vueuse/core'
+import { TextureLoader } from 'three'
 
 const sizesCanvas = {
-    width: window.innerWidth,
-    height: window.innerHeight
+  width: window.innerWidth,
+  height: window.innerHeight,
 }
 
 const scrollI = ref(0.0)
 function animateScroll(deltaY: number) {
-    if (deltaY > 0) scrollI.value++
-    else if (deltaY < 0 && scrollI.value > 0) scrollI.value--
+  if (deltaY > 0) scrollI.value++
+  else if (deltaY < 0 && scrollI.value > 0) scrollI.value--
 }
 
 // TODO: Speed
-window.addEventListener('wheel', (e) => {
-    animateScroll(e.deltaY)
+window.addEventListener('wheel', e => {
+  animateScroll(e.deltaY)
 })
-Hammer.default(window)
-.on('pan', (e: any) => {
-    switch (e.additionalEvent) {
-        case 'panleft':
-            animateScroll(1)
-            break
-        case 'panright':
-            animateScroll(-1)
-            break
-        default:
-            break
-    }
+Hammer.default(window).on('pan', (e: any) => {
+  switch (e.additionalEvent) {
+    case 'panleft':
+      animateScroll(1)
+      break
+    case 'panright':
+      animateScroll(-1)
+      break
+    default:
+      break
+  }
 })
 
 const articles = [
@@ -79,48 +80,55 @@ const articles = [
   {
     title: '11. This is 5 word title',
     image: './model/test-image.jpg',
-  }
+  },
 ]
+import { BasicShadowMap, NoToneMapping, SRGBColorSpace } from 'three'
 
-const color = ref('#333')
+import * as THREE from "three";
+const canvasRef = ref();
+watch(canvasRef, (canvas) => {
+  const backgroundTexture = new THREE.TextureLoader().load('./model/background.jpg');
+  canvas.context.scene.value.background = backgroundTexture
+})
+const gl = {
+  clearColor: '#82DBC5',
+  shadows: true,
+  alpha: false,
+  shadowMapType: BasicShadowMap,
+  outputColorSpace: SRGBColorSpace,
+  toneMapping: NoToneMapping,
+}
 </script>
 
-
 <template>
-    <header class="logo">
-      <a href="https://s-group.vn" target="_blank">
-        <img src="./assets/s-logo.png" alt="s-group">
-      </a>
-    </header>
+  <header class="logo">
+    <a href="https://s-group.vn" target="_blank">
+      <img src="./assets/s-logo.png" alt="s-group" />
+    </a>
+  </header>
 
-    <div class="color">
-      <label for="color">Edit background color here:</label>
-      <input id="color" type="color" v-model="color">
-    </div>
+  <main>
+    <TresCanvas ref="canvasRef" window-size v-bind="gl">
+      <TresAxesHelper :position="[1, 1, 1]" />
+      <TresGridHelper :size="100" :divisions="100" />
+      <TresPerspectiveCamera
+        :position="[0, 1, -5]"
+        :args="[75, sizesCanvas.width / sizesCanvas.height, 0.1, 100]"
+      />
+      <TresAmbientLight />
+      <OrbitControls :enabled="false" :enableZoom="false" />
 
-    <main>
-      <TresCanvas :clear-color="color" window-size>
-        <TresGridHelper :size="100" :divisions="100" />
+      <Suspense>
+        <LogoModel :scrollI="scrollI" />
+      </Suspense>
 
-        <TresPerspectiveCamera :position="[0, 1, -5]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
-        <TresAmbientLight :intensity="1.5"/>
-        <OrbitControls :enabled="false" :enableZoom="false" />
+      <Suspense v-for="(article, index) in articles" :key="index">
+        <PlaneModel :index="index" :article="article" :u-scroll-i="scrollI" />
+      </Suspense>
+    </TresCanvas>
+  </main>
 
-        <Suspense>
-          <LogoModel :scrollI="scrollI" />
-        </Suspense>
-
-        <Suspense v-for="(article, index) in articles" :key="index">
-          <PlaneModel :index="index" :article="article" :u-scroll-i="scrollI"/>
-        </Suspense>
-      </TresCanvas>
-    </main>
-
-
-    <footer>
-
-    </footer>
-
+  <footer></footer>
 </template>
 
 <style>

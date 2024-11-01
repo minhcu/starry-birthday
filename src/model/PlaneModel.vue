@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, shallowReactive, watch } from 'vue';
+import { ref, shallowReactive, watch, computed } from 'vue';
+import { Mesh, TextureLoader } from 'three'
 import { useLoader, useRenderLoop } from '@tresjs/core'
-import { TextureLoader } from 'three'
+import { Text } from 'troika-three-text'
+
+const blobRef = ref<Mesh | null>(null)
 
 const props = defineProps({
   index: {
@@ -20,31 +23,38 @@ const props = defineProps({
 })
 
 const texture = await useLoader(TextureLoader, props.article.image)
-console.log(texture)
-
-import { Mesh } from 'three'
-
-const blobRef = ref<Mesh | null>(null)
 
 // Plane Initial Position
+const initialIndex = 2.55
 const distance = 1;
-const speed = 0.05;
-const posX = () => distance * 4 * Math.sin(props.index + 1 * props.uScrollI * speed)
-const posY = () => (props.index - 12) + (props.uScrollI * speed)
-const posZ = () => - distance * 2.5 * Math.cos(props.index + 1 * props.uScrollI * speed)
+const speed = 0.02;
+const posX = () => distance * 4 * Math.sin((props.index + initialIndex) + 1 * props.uScrollI * speed)
+const posY = () => ((props.index + initialIndex) - 12) + (props.uScrollI * speed)
+const posZ = () => - distance * 2.5 * Math.cos((props.index + initialIndex) + 1 * props.uScrollI * speed)
+
 const position = shallowReactive({
   x: posX(),
   y: posY(),
   z: posZ()
 })
-
-
 // On Scroll
+const newText = new Text()
+newText.text = props.article.title
+newText.fontSize = 0.2
+newText.position.y = position.y
+newText.position.x = position.x
+newText.position.z = position.z
+newText.anchorX = 'right'
+
 watch(() => props.uScrollI, (newVal) => {
   uniforms.uScrollI.value = newVal
   position.x = posX()
   position.y = posY()
   position.z = posZ()
+  newText.position.y = position.y
+  newText.position.x = position.x * 1.05
+  newText.position.z = position.z * 1.05
+  newText.lookAt(position.x * 2, position.y + 0.5, position.z * 2)
 })
 
 // ShaderMaterial
@@ -109,9 +119,9 @@ onLoop(({ elapsed }) => {
 </script>
 
 <template>
-  <TresMesh ref="blobRef" :look-at="[0, position.y, 0]" :position="[position.x, position.y, position.z]">
+  <TresMesh :look-at="[0, position.y * 0.5, 0]" :position="[position.x, position.y, position.z]">
     <TresPlaneGeometry :args="[2, 1.25, 32, 32]" />
     <TresShaderMaterial :side="2" :uniforms="uniforms" :vertex-shader="vertexShader" :fragment-shader="fragmentShader" />
-    <!-- <TresMeshStandardMaterial :side="2" :map="texture" /> -->
   </TresMesh>
+  <primitive :object="newText" />
 </template>

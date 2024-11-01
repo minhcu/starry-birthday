@@ -11,7 +11,6 @@ const sizesCanvas = {
 }
 
 const scrollI = ref(0.0)
-
 function animateScroll(e: WheelEvent) {
     const deltaY = e.deltaY
     if (deltaY > 0) scrollI.value++
@@ -68,6 +67,8 @@ const articles = [
     image: './model/test-image.jpg',
   }
 ]
+
+
 </script>
 
 
@@ -82,7 +83,7 @@ const articles = [
       <TresCanvas clear-color="#82DBC5" window-size>
         <TresGridHelper :size="100" :divisions="100" />
 
-        <TresPerspectiveCamera :position="[0, 1, -4]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
+        <TresPerspectiveCamera :position="[0, 1, -5]" :args="[75, sizesCanvas.width/ sizesCanvas.height, 0.1, 100]"/>
         <TresAmbientLight :intensity="1.5"/>
         <OrbitControls :enabled="false" :enableZoom="false" />
 
@@ -93,7 +94,6 @@ const articles = [
         <Suspense v-for="(article, index) in articles" :key="index">
           <PlaneModel :index="index" :article="article" :u-scroll-i="scrollI"/>
         </Suspense>
-
       </TresCanvas>
     </main>
 

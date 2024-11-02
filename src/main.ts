@@ -174,3 +174,10 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(window.devicePixelRatio || 2);
   updatePlanesSize();
 })
+
+document.querySelector<HTMLButtonElement>(".statement-button a")!.addEventListener("click", () => {
+  gsap.to(document.querySelector<HTMLDivElement>(".statement .text"), {
+    css: { opacity: 0 },
+    duration: 0.3,
+  })
+})

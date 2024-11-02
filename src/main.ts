@@ -26,8 +26,7 @@ renderer.setSize(canvasSize.width, canvasSize.height);
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableZoom = false;
-// controls.enabled = false;
-
+controls.enabled = false;
 
 import { GridHelper } from "three";
 const gridHelper = new GridHelper(100, 100);
@@ -36,25 +35,24 @@ import { AxesHelper } from "three";
 const axesHelper = new AxesHelper(3);
 scene.add(axesHelper);
 
-
 import { LoadingManager } from "three";
 import { gsap, Power1 } from "gsap";
 const loadingManager = new LoadingManager(
   () => {
-    // setTimeout(() => {
-    //   gsap.from(camera.position, {
-    //     duration: 1.5,
-    //     x: -30,
-    //     y: 20,
-    //     z: -10,
-    //     ease: Power1.easeOut,
-    //   })
-    //   gsap.from(canvas, {
-    //     duration: 2,
-    //     css: { opacity: 0 },
-    //     ease: Power1.easeInOut,
-    //   })
-    // }, 50);
+    setTimeout(() => {
+      gsap.from(camera.position, {
+        duration: 1.5,
+        x: -30,
+        y: 20,
+        z: -10,
+        ease: Power1.easeOut,
+      })
+      gsap.from(canvas, {
+        duration: 2,
+        css: { opacity: 0 },
+        ease: Power1.easeInOut,
+      })
+    }, 50);
   }
 );
 import { TextureLoader } from "three";
@@ -76,7 +74,7 @@ gltfLoader.load('./models/s-logo.glb', (gltf) => {
 
 
 import { articles } from "./constants";
-import { Group, Mesh, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3, Clock } from "three";
+import { Group, Mesh, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3 } from "three";
 import { vertext, fragment } from "./shader";
 import { Text } from "troika-three-text";
 
@@ -84,7 +82,6 @@ const groupPlanes = new Group();
 const groupTexts = new Group();
 scene.add(groupPlanes, groupTexts);
 const planeGeometry = new PlaneGeometry(2, 1.25, 32, 32)
-const planes: ShaderMaterial[] = [];
 
 const helix = {
   initialRadius: 3,
@@ -92,8 +89,7 @@ const helix = {
   angleSpacing: Math.PI / 2,
   targetPosition: new Vector3(0, 1.5, 3)
 }
-const clock = new Clock();
-articles.forEach((article, index) => {
+articles.forEach(article => {
   const material = new ShaderMaterial({
     side: DoubleSide,
     vertexShader: vertext,
@@ -107,26 +103,37 @@ articles.forEach((article, index) => {
   const plane: Mesh<PlaneGeometry, ShaderMaterial> = new Mesh(planeGeometry, material);
   // planes.push(material);
   groupPlanes.add(plane);
+
+  const text = new Text();
+  text.text = article.title;
+  text.fontSize = 0.1;
+  groupTexts.add(text);
 });
 
-function updatePlanes(scrollProgress: number) {
-  console.log(scrollProgress);
+function updatePlanesPosition(scrollProgress: number) {
   groupPlanes.children.forEach((plane, index) => {
+    if (index === 0) console.log(plane.position, scrollProgress);
     const progress = - index + scrollProgress + 1;
     const angle = (- index + scrollProgress) * Math.PI / 2 * 1.5
     const x = - 2 * Math.cos(angle);
     const y = progress * helix.heightSpacing * 1.2
-    const z = - 2 * Math.sin(angle); 
+    const z = - 2.5 * Math.sin(angle); 
     plane.position.set(x, y, z);
     plane.lookAt(0, y, 0);
+
+    const text = groupTexts.children[index];
+    text.position.set(x, y, z);
+    text.lookAt(0, -y, 0);
   });
 }
-updatePlanes(0);
+updatePlanesPosition(-0.6683333);
 
-let scrollProgress = 0;
+let minScrollProgress = -0.6683333523273476;
+let scrollProgress = minScrollProgress
 window.addEventListener("wheel", (event) => {
-  scrollProgress += event.deltaY * 0.0005; // Adjust the scroll speed as needed
-  updatePlanes(scrollProgress);
+  scrollProgress += event.deltaY * 0.001; // Adjust the scroll speed as needed
+  if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
+  updatePlanesPosition(scrollProgress);
 });
 
 function animate() {
@@ -136,6 +143,15 @@ function animate() {
 }
 animate();
 
+function updatePlanesSize() {
+  // const ratio = 2 / 1.25
+  const aspect = canvasSize.width / canvasSize.height;
+  groupPlanes.children.forEach((plane) => {
+    console.log(plane);
+    plane.scale.set(1, aspect, 1);
+  });
+}
+
 window.addEventListener("resize", () => {
   canvasSize.width = window.innerWidth;
   canvasSize.height = window.innerHeight;
@@ -143,4 +159,5 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(canvasSize.width, canvasSize.height);
   renderer.setPixelRatio(window.devicePixelRatio || 2);
+  updatePlanesSize();
 })

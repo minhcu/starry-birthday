@@ -20,12 +20,12 @@ renderer.setSize(canvasSize.width, canvasSize.height);
 controls.enableZoom = false;
 controls.enabled = false;
 
-import { GridHelper } from "three";
-const gridHelper = new GridHelper(100, 100);
-scene.add(gridHelper);
-import { AxesHelper } from "three";
-const axesHelper = new AxesHelper(3);
-scene.add(axesHelper);
+// import { GridHelper } from "three";
+// const gridHelper = new GridHelper(100, 100);
+// scene.add(gridHelper);
+// import { AxesHelper } from "three";
+// const axesHelper = new AxesHelper(3);
+// scene.add(axesHelper);
 
 const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
 const loadingManager = new LoadingManager(
@@ -80,6 +80,7 @@ const helix = {
   targetPosition: new Vector3(0, 1.5, 3)
 }
 articles.forEach(article => {
+  const image = textureLoader.load(article.image)
   const material = new ShaderMaterial({
     side: DoubleSide,
     vertexShader: vertext,
@@ -87,6 +88,7 @@ articles.forEach(article => {
     uniforms: {
       uTime: { value: 0 },
       uTouch: { value: 0 },
+      uTexture: { value: image },
     }
   });
 
@@ -116,7 +118,7 @@ function updatePlanesPosition(scrollProgress: number) {
     text.lookAt(0, y, 0);
   });
 }
-updatePlanesPosition(-0.6683333);
+updatePlanesPosition(-0.6683333523273476);
 
 let minScrollProgress = -0.6683333523273476;
 let scrollProgress = minScrollProgress;
@@ -146,7 +148,7 @@ window.addEventListener("touchmove", async (event) => {
     },
     onComplete: () => {
       touchStartY = touchCurrentY;
-    }
+    },
   });
 });
 
@@ -175,9 +177,26 @@ window.addEventListener("resize", () => {
   updatePlanesSize();
 })
 
-document.querySelector<HTMLButtonElement>(".statement-button a")!.addEventListener("click", () => {
+groupPlanes.visible = false;
+groupTexts.visible = false;
+document.querySelector<HTMLButtonElement>(".statement-button a")!.addEventListener("click", (e) => {
+  e.preventDefault();
   gsap.to(document.querySelector<HTMLDivElement>(".statement .text"), {
     css: { opacity: 0 },
     duration: 0.3,
+  })
+  gsap.from({
+    minScrollProgress: -2,
+  }, {
+    duration: 0.1,
+    onStart: () => {
+      groupPlanes.visible = true;
+      groupTexts.visible = true;
+    },
+    onUpdate: () => {
+      console.log(minScrollProgress);
+      updatePlanesPosition(minScrollProgress);
+    },
+    minScrollProgress: -0.6683333523273476,
   })
 })

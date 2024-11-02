@@ -96,6 +96,8 @@ articles.forEach(article => {
   const text = new Text();
   text.text = article.title;
   text.fontSize = 0.1;
+  text.scale.x = -1; // Mirror the text
+  text.anchorX = "right";
   groupTexts.add(text);
 });
 
@@ -110,8 +112,8 @@ function updatePlanesPosition(scrollProgress: number) {
     plane.lookAt(0, y, 0);
 
     const text = groupTexts.children[index];
-    text.position.set(x, y, z);
-    text.lookAt(0, -y, 0);
+    text.position.set(x - 0.2, y, z + 0.4);
+    text.lookAt(0, y, 0);
   });
 }
 updatePlanesPosition(-0.6683333);
@@ -136,7 +138,7 @@ window.addEventListener("touchmove", async (event) => {
   const touchCurrentY = event.touches[0].clientX;
   const touchDeltaY = touchCurrentY - touchStartY;
   await gsap.to({}, {
-    duration: 0.15,
+    duration: 0.12,
     onUpdate: () => {
       scrollProgress -= touchDeltaY * 0.00005;
       if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;

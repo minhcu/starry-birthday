@@ -1,30 +1,22 @@
-import "./style.css";
-import { Scene, WebGLRenderer, PerspectiveCamera } from "three"
+import "./style.css"
+import { Scene, WebGLRenderer, LoadingManager } from "three"
+import { canvasSize } from "./constants"
+import camera from "./components/camera";
 import { ambientLight, pointLight, directionalLight } from "./components/light";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { gsap, Power1 } from "gsap";
 
-
-const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
-
-const canvasSize = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
-
+// Global variables
 const scene = new Scene();
-scene.add(ambientLight, pointLight, directionalLight, directionalLight.target);
-
-const camera = new PerspectiveCamera(45, canvasSize.width / canvasSize.height, 0.1, 100);
-camera.position.set(0, 1, 6);
-scene.add(camera);
-
 const renderer = new WebGLRenderer({
   canvas: document.querySelector<HTMLCanvasElement>("#canvas")!,
 });
+const controls = new OrbitControls(camera, renderer.domElement);
+
+scene.add(ambientLight, pointLight, directionalLight, directionalLight.target);
+scene.add(camera);
 renderer.setPixelRatio(window.devicePixelRatio || 2);
 renderer.setSize(canvasSize.width, canvasSize.height);
-
-import { OrbitControls } from "three/examples/jsm/Addons.js";
-const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableZoom = false;
 controls.enabled = false;
 
@@ -35,8 +27,7 @@ import { AxesHelper } from "three";
 const axesHelper = new AxesHelper(3);
 scene.add(axesHelper);
 
-import { LoadingManager } from "three";
-import { gsap, Power1 } from "gsap";
+const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
 const loadingManager = new LoadingManager(
   () => {
     setTimeout(() => {
@@ -72,7 +63,6 @@ gltfLoader.load('./models/s-logo.glb', (gltf) => {
   scene.add(gltf.scene);
 })
 
-
 import { articles } from "./constants";
 import { Group, Mesh, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3 } from "three";
 import { vertext, fragment } from "./shader";
@@ -101,7 +91,6 @@ articles.forEach(article => {
   });
 
   const plane: Mesh<PlaneGeometry, ShaderMaterial> = new Mesh(planeGeometry, material);
-  // planes.push(material);
   groupPlanes.add(plane);
 
   const text = new Text();
@@ -112,7 +101,6 @@ articles.forEach(article => {
 
 function updatePlanesPosition(scrollProgress: number) {
   groupPlanes.children.forEach((plane, index) => {
-    if (index === 0) console.log(plane.position, scrollProgress);
     const progress = - index + scrollProgress + 1;
     const angle = (- index + scrollProgress) * Math.PI / 2 * 1.5
     const x = - 2 * Math.cos(angle);
@@ -129,11 +117,35 @@ function updatePlanesPosition(scrollProgress: number) {
 updatePlanesPosition(-0.6683333);
 
 let minScrollProgress = -0.6683333523273476;
-let scrollProgress = minScrollProgress
+let scrollProgress = minScrollProgress;
+let touchStartY = 0;
+
 window.addEventListener("wheel", (event) => {
-  scrollProgress += event.deltaY * 0.001; // Adjust the scroll speed as needed
+  scrollProgress += event.deltaY * 0.001;
   if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
   updatePlanesPosition(scrollProgress);
+});
+
+window.addEventListener("touchstart", (event) => {
+  touchStartY = event.touches[0].clientX;
+});
+
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener("touchmove", async (event) => {
+  const touchCurrentY = event.touches[0].clientX;
+  const touchDeltaY = touchCurrentY - touchStartY;
+  await gsap.to({}, {
+    duration: 0.15,
+    onUpdate: () => {
+      scrollProgress -= touchDeltaY * 0.00005;
+      if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
+      updatePlanesPosition(scrollProgress);
+    },
+    onComplete: () => {
+      touchStartY = touchCurrentY;
+    }
+  });
 });
 
 function animate() {
@@ -147,7 +159,6 @@ function updatePlanesSize() {
   // const ratio = 2 / 1.25
   const aspect = canvasSize.width / canvasSize.height;
   groupPlanes.children.forEach((plane) => {
-    console.log(plane);
     plane.scale.set(1, aspect, 1);
   });
 }

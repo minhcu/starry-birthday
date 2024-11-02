@@ -44,3 +44,8 @@ export const articles = [
     image: "./images/test-image.jpg",
   },
 ];
+
+export const canvasSize = {
+  width: window.innerWidth,
+  height: window.innerHeight
+};

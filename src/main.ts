@@ -1,12 +1,11 @@
 import "./style.css"
-import { Scene, WebGLRenderer, LoadingManager } from "three"
+import { Scene, WebGLRenderer, LoadingManager, MeshBasicMaterial } from "three"
 import { canvasSize } from "./constants"
 import camera from "./components/camera";
 import { ambientLight, pointLight, directionalLight } from "./components/light";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { gsap, Power1 } from "gsap";
 
-// Global variables
 const scene = new Scene();
 const renderer = new WebGLRenderer({
   canvas: document.querySelector<HTMLCanvasElement>("#canvas")!,
@@ -19,13 +18,6 @@ renderer.setPixelRatio(window.devicePixelRatio || 2);
 renderer.setSize(canvasSize.width, canvasSize.height);
 controls.enableZoom = false;
 controls.enabled = false;
-
-// import { GridHelper } from "three";
-// const gridHelper = new GridHelper(100, 100);
-// scene.add(gridHelper);
-// import { AxesHelper } from "three";
-// const axesHelper = new AxesHelper(3);
-// scene.add(axesHelper);
 
 const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
 const loadingManager = new LoadingManager(
@@ -71,7 +63,7 @@ import { Text } from "troika-three-text";
 const groupPlanes = new Group();
 const groupTexts = new Group();
 scene.add(groupPlanes, groupTexts);
-const planeGeometry = new PlaneGeometry(2, 1.25, 32, 32)
+const planeGeometry = new PlaneGeometry(2, 1.13, 32, 32)
 
 const helix = {
   initialRadius: 3,
@@ -94,28 +86,62 @@ articles.forEach(article => {
 
   const plane: Mesh<PlaneGeometry, ShaderMaterial> = new Mesh(planeGeometry, material);
   groupPlanes.add(plane);
-
+  
   const text = new Text();
   text.text = article.title;
   text.fontSize = 0.1;
-  text.scale.x = -1; // Mirror the text
-  text.anchorX = "right";
+  text.scale.x = -1;
+  text.color = '#fff'
+  text.material = new MeshBasicMaterial({ 
+    side: DoubleSide,
+    transparent: true,
+    opacity: 0
+  });
+  text.outlineColor = "#000"
+  text.outlineWidth = 0.01;
   groupTexts.add(text);
 });
 
+function updateTextOpacity(text: any) {
+  const beginCoors = {
+    x: 1.2,
+    y: 0.21,
+  }
+  const endCoors = {
+    x: -1.2,
+    y: 1,
+  }
+  const { x, y} = text.position;
+  if (x < beginCoors.x && x > endCoors.x && y > beginCoors.y && y < endCoors.y) {
+    gsap.to(text.material[1], {
+      duration: 0.2,
+      opacity: 1,
+      ease: Power1.easeInOut,
+    })
+  } else {
+    gsap.to(text.material[1], {
+      duration: 0.2,
+      opacity: 0,
+      ease: Power1.easeInOut,
+    })
+  }
+}
+
 function updatePlanesPosition(scrollProgress: number) {
+  
   groupPlanes.children.forEach((plane, index) => {
     const progress = - index + scrollProgress + 1;
     const angle = (- index + scrollProgress) * Math.PI / 2 * 1.5
-    const x = - 2 * Math.cos(angle);
+    const x = - 2.5 * Math.cos(angle);
     const y = progress * helix.heightSpacing * 1.2
     const z = - 2.5 * Math.sin(angle); 
     plane.position.set(x, y, z);
     plane.lookAt(0, y, 0);
 
     const text = groupTexts.children[index];
-    text.position.set(x - 0.2, y, z + 0.4);
+    text.position.set(x, y, z + 0.6);
     text.lookAt(0, y, 0);
+    updateTextOpacity(text);
   });
 }
 updatePlanesPosition(-0.6683333523273476);
@@ -159,14 +185,6 @@ function animate() {
 }
 animate();
 
-function updatePlanesSize() {
-  // const ratio = 2 / 1.25
-  const aspect = canvasSize.width / canvasSize.height;
-  groupPlanes.children.forEach((plane) => {
-    plane.scale.set(1, aspect, 1);
-  });
-}
-
 window.addEventListener("resize", () => {
   canvasSize.width = window.innerWidth;
   canvasSize.height = window.innerHeight;
@@ -174,29 +192,4 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(canvasSize.width, canvasSize.height);
   renderer.setPixelRatio(window.devicePixelRatio || 2);
-  updatePlanesSize();
-})
-
-groupPlanes.visible = false;
-groupTexts.visible = false;
-document.querySelector<HTMLButtonElement>(".statement-button a")!.addEventListener("click", (e) => {
-  e.preventDefault();
-  gsap.to(document.querySelector<HTMLDivElement>(".statement .text"), {
-    css: { opacity: 0 },
-    duration: 0.3,
-  })
-  gsap.from({
-    minScrollProgress: -2,
-  }, {
-    duration: 0.1,
-    onStart: () => {
-      groupPlanes.visible = true;
-      groupTexts.visible = true;
-    },
-    onUpdate: () => {
-      console.log(minScrollProgress);
-      updatePlanesPosition(minScrollProgress);
-    },
-    minScrollProgress: -0.6683333523273476,
-  })
 })

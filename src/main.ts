@@ -56,7 +56,7 @@ gltfLoader.load('./models/s-logo.glb', (gltf) => {
 })
 
 import { articles } from "./constants";
-import { Group, Mesh, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3 } from "three";
+import { Group, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3, Mesh } from "three";
 import { vertext, fragment } from "./shader";
 import { Text } from "troika-three-text";
 
@@ -71,6 +71,9 @@ const helix = {
   angleSpacing: Math.PI / 2,
   targetPosition: new Vector3(0, 1.5, 3)
 }
+class CustomMesh extends Mesh<PlaneGeometry, ShaderMaterial> {
+  customUrl?: string;
+}
 articles.forEach(article => {
   const image = textureLoader.load(article.image)
   const material = new ShaderMaterial({
@@ -83,8 +86,9 @@ articles.forEach(article => {
       uTexture: { value: image },
     }
   });
-
-  const plane: Mesh<PlaneGeometry, ShaderMaterial> = new Mesh(planeGeometry, material);
+  
+  const plane: CustomMesh = new CustomMesh(planeGeometry, material);
+  plane.customUrl = article.url;
   groupPlanes.add(plane);
   
   const text = new Text();
@@ -114,13 +118,13 @@ function updateTextOpacity(text: any) {
   const { x, y} = text.position;
   if (x < beginCoors.x && x > endCoors.x && y > beginCoors.y && y < endCoors.y) {
     gsap.to(text.material[1], {
-      duration: 0.2,
+      duration: 0.15,
       opacity: 1,
       ease: Power1.easeInOut,
     })
   } else {
     gsap.to(text.material[1], {
-      duration: 0.2,
+      duration: 0.15,
       opacity: 0,
       ease: Power1.easeInOut,
     })
@@ -128,7 +132,6 @@ function updateTextOpacity(text: any) {
 }
 
 function updatePlanesPosition(scrollProgress: number) {
-  
   groupPlanes.children.forEach((plane, index) => {
     const progress = - index + scrollProgress + 1;
     const angle = (- index + scrollProgress) * Math.PI / 2 * 1.5
@@ -178,13 +181,6 @@ window.addEventListener("touchmove", async (event) => {
   });
 });
 
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-animate();
-
 window.addEventListener("resize", () => {
   canvasSize.width = window.innerWidth;
   canvasSize.height = window.innerHeight;
@@ -193,3 +189,39 @@ window.addEventListener("resize", () => {
   renderer.setSize(canvasSize.width, canvasSize.height);
   renderer.setPixelRatio(window.devicePixelRatio || 2);
 })
+
+import { Raycaster, Vector2 } from "three";
+
+const mouse = new Vector2();
+const raycaster = new Raycaster();
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / canvasSize.width) * 2 - 1;
+  mouse.y = - (event.clientY / canvasSize.height) * 2 + 1;
+})
+
+// TODO: Open the active article only
+window.addEventListener("click", () => {
+  if (currentIntersect) {
+    window.open(currentIntersect.customUrl, "_blank");
+  }
+})
+
+let currentIntersect: CustomMesh | null = null;
+function animate() {
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(groupPlanes.children);
+  if (intersects.length) {
+    if (currentIntersect !== intersects[0].object) {
+      currentIntersect = intersects[0].object as CustomMesh;
+      document.body.style.cursor = "pointer";
+    }
+  } else {
+    currentIntersect = null;
+    document.body.style.cursor = "auto";
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();

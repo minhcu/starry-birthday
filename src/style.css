@@ -399,11 +399,11 @@ footer p {
   color: transparent;
   -webkit-text-stroke: 3px #fff;
 }
+.audio .loader,
 .audio.loading::before {
-  display: none;
+ display: none;
 }
 .audio .loader {
-  /* change color here */
   color: #000;
 }
 .audio .loader,
@@ -411,7 +411,7 @@ footer p {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
-.audio .loader {
+.audio.loading .loader {
   display: inline-block;
   width: 1.875rem;
   height: 1.875rem;

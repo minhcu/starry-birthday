@@ -9,8 +9,8 @@ export function initSound() {
   let listener: AudioListener | undefined = undefined;
   let sound: Audio | undefined = undefined;
   let audioLoader: AudioLoader | undefined = undefined;
-  document
-  .querySelector<HTMLDivElement>(".audio")!
+  const audio = document.querySelector<HTMLDivElement>(".audio")!
+  audio
   .addEventListener("click", () => {
       const play = document.querySelector<HTMLDivElement>(".play")!;
       const pause = document.querySelector<HTMLDivElement>(".pause")!;
@@ -21,6 +21,7 @@ export function initSound() {
       }
       if (!sound) sound = new Audio(listener);
       if (!isMusicLoaded) {
+        audio.classList.add("loading");
         audioLoader.load("./song/song.mp3", function (buffer) {
           isMusicLoaded = true;
           if (sound) {
@@ -28,6 +29,7 @@ export function initSound() {
             sound.setLoop(true);
             sound.setVolume(1);
           }
+          audio.classList.remove("loading");
           gsap
             .timeline()
             .to(play, {

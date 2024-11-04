@@ -23,6 +23,7 @@ const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
 const loadingImage = document.querySelector<HTMLImageElement>("#loading")!;
 const loadingContainer =
   document.querySelector<HTMLDivElement>(".loading-container")!;
+const landing = document.querySelector<HTMLDivElement>(".landing")!;
 const loadingManager = new LoadingManager(
   () => {
     let isStart = false;
@@ -40,9 +41,12 @@ const loadingManager = new LoadingManager(
               e.preventDefault();
               if (isStart) return;
               isStart = true;
-              gsap.to(document.querySelector<HTMLDivElement>(".landing")!, {
+              gsap.to(landing, {
                 duration: 1,
                 css: { opacity: 0 },
+                onComplete: () => {
+                  landing.style.display = "none";
+                }
               });
               gsap.to(camera.position, {
                 duration: 2,

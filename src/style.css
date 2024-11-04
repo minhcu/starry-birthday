@@ -173,11 +173,18 @@ footer p {
       padding: 0 5rem 5rem 5rem;
   }
 }
-
+.loading .loading-content,
+.loading .loadingtext {
+  display: block;
+}
+.loading .content {
+  display: none;
+}
 .loading-content {
   position: relative;
   width: 360px;
   height: 360px;
+  display: none;
 }
 .loading-content div {
   overflow: hidden;
@@ -193,6 +200,9 @@ footer p {
   width: 360px;
   height: 0;
   transition: all 0.5s ease;
+}
+.loadingtext {
+  display: none;
 }
 .loadingtext span {
   display: inline-block;

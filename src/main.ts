@@ -96,7 +96,7 @@ function updateTextOpacity(text: any, plane: any) {
       duration: 0.15,
       opacity: 1,
       ease: Power1.easeInOut,
-      onComplete: () => {
+      onStart: () => {
         plane.isLoaded = true;
       }
     })
@@ -105,7 +105,7 @@ function updateTextOpacity(text: any, plane: any) {
       duration: 0.15,
       opacity: 0,
       ease: Power1.easeInOut,
-      onComplete: () => {
+      onStart: () => {
         plane.isLoaded = false;
       }
     })

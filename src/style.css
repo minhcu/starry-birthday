@@ -388,6 +388,7 @@ footer p {
           transform: translate(-50%, -50%);
   text-align: center;
   display: none;
+  padding: 0 2rem;
 }
 .celebrate span {
   font-size: 5rem;
@@ -401,7 +402,7 @@ footer p {
 }
 .audio .loader,
 .audio.loading::before {
- display: none;
+  display: none;
 }
 .audio .loader {
   color: #000;

@@ -16,7 +16,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 scene.add(ambientLight, pointLight, directionalLight, directionalLight.target);
 scene.add(camera);
 renderer.setPixelRatio(window.devicePixelRatio || 2);
-renderer.setSize(canvasSize.width, canvasSize.height);
+renderer.setSize(window.innerWidth, window.innerHeight);
 controls.enableZoom = false;
 controls.enabled = false;
 
@@ -137,7 +137,8 @@ function updatePlanesPosition(scrollProgress: number) {
 }
 updatePlanesPosition(-0.6683333523273476);
 
-let minScrollProgress = -0.6683333523273476;
+const minScrollProgress = -0.6683333523273476;
+const maxScrollProgress = 10.84;
 let scrollProgress = minScrollProgress;
 let touchStartY = 0;
 
@@ -174,20 +175,21 @@ window.addEventListener("touchmove", async (event) => {
 });
 
 function updatePlanesRect() {
-  const ratio = document.body.clientWidth / 767;
+  const ratio = document.body.clientWidth / 800;
   if (ratio > 1) return;
   groupPlanes.children.forEach((plane, index) => {
     plane.scale.set(-ratio, ratio, ratio);
     groupTexts.children[index].scale.set(-ratio, ratio, ratio);
   });
 }
+updatePlanesRect();
 
 window.addEventListener("resize", () => {
   canvasSize.width = window.innerWidth;
   canvasSize.height = window.innerHeight;
   camera.aspect = canvasSize.width / canvasSize.height;
   camera.updateProjectionMatrix();
-  renderer.setSize(canvasSize.width, canvasSize.height);
+  renderer.setSize(document.body.clientWidth, document.body.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio || 2);
 
   updatePlanesRect();

@@ -31,11 +31,6 @@ export const articles = [
   },
   {
     title: "Chuyên môn\nMarketing Online\ntốt nghiệp\nkhoá học content",
-    image: "./images/image-7.jpg",
-    url: "https://www.facebook.com/share/p/JDVucN3miVwRs9Fd/"
-  },
-  {
-    title: "Chuyên môn\nThiết Kế\ntrình bày đồ án",
     image: "./images/image-8.jpg",
     url: "https://www.facebook.com/share/p/WVB3a6nzHXDEKGaE/"
   },

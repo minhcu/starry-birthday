@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="./images/s-logo.png" />
+    <link rel="preload" href="./fonts/Itim-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Year Of Sgroup</title>
   </head>
   <body>
-    <div id="app">
+    <div id="app" style="opacity: 0;">
       <canvas id="canvas"></canvas>
       <header>
         <a href="https://s-group.vn" target="_blank">
@@ -15,32 +16,32 @@
         </a>
       </header>
 
-      <div class="landing loading">
-
-        <div class="loading-content">
-          <img src="./images/loading.png" alt="">
-          
-          <div id="loading">
+      <div class="landing">
+        <div class="loading-container">
+          <div class="loading-content">
             <img src="./images/loading.png" alt="">
+            
+            <div id="loading">
+              <img src="./images/loading.png" alt="">
+            </div>
           </div>
-        </div>
-        <div class="loadingtext">
-          <span>L</span>
-          <span>O</span>
-          <span>A</span>
-          <span>D</span>
-          <span>I</span>
-          <span>N</span>
-          <span>G</span>
-        </div>
-        <div class="loading-footer">
-          <p>
-            Think Different - Make Different
-          </p>
+          <div class="loadingtext">
+            <span>L</span>
+            <span>O</span>
+            <span>A</span>
+            <span>D</span>
+            <span>I</span>
+            <span>N</span>
+            <span>G</span>
+          </div>
         </div>
       </div>
 
-      <footer></footer>
+      <footer>
+        <p>
+          Think Different - Make Different
+        </p>
+      </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

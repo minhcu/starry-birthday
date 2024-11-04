@@ -33,7 +33,7 @@ gltfLoader.load('./models/s-logo.glb', (gltf) => {
 })
 
 import { articles } from "./constants";
-import { Group, PlaneGeometry, ShaderMaterial, DoubleSide, Vector3, Mesh } from "three";
+import { Group, PlaneGeometry, ShaderMaterial, DoubleSide, Mesh } from "three";
 import { vertext, fragment } from "./shader";
 import { Text } from "troika-three-text";
 
@@ -42,12 +42,6 @@ const groupTexts = new Group();
 scene.add(groupPlanes, groupTexts);
 const planeGeometry = new PlaneGeometry(2, 1.13, 32, 32)
 
-const helix = {
-  initialRadius: 3,
-  heightSpacing: 1.5,
-  angleSpacing: Math.PI / 2,
-  targetPosition: new Vector3(0, 1.5, 3)
-}
 class CustomMesh extends Mesh<PlaneGeometry, ShaderMaterial> {
   customUrl?: string;
 }
@@ -66,6 +60,7 @@ articles.forEach(article => {
   
   const plane: CustomMesh = new CustomMesh(planeGeometry, material);
   plane.customUrl = article.url;
+  plane.scale.x = -1
   groupPlanes.add(plane);
   
   const text = new Text();
@@ -113,7 +108,7 @@ function updatePlanesPosition(scrollProgress: number) {
     const progress = - index + scrollProgress + 1;
     const angle = (- index + scrollProgress) * Math.PI / 2 * 1.5
     const x = - 2.5 * Math.cos(angle);
-    const y = progress * helix.heightSpacing * 1.2
+    const y = progress * 1.5 * 1.2
     const z = - 2.5 * Math.sin(angle); 
     plane.position.set(x, y, z);
     plane.lookAt(0, y, 0);
@@ -202,3 +197,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelector<HTMLDivElement>('#app')!.style.opacity = '1'
+})

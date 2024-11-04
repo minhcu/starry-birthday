@@ -155,10 +155,10 @@ window.addEventListener("touchstart", (event) => {
 
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
-window.addEventListener("touchmove", async (event) => {
+window.addEventListener("touchmove", (event) => {
   const touchCurrentY = event.touches[0].clientX;
   const touchDeltaY = touchCurrentY - touchStartY;
-  await gsap.to(
+  gsap.to(
     {},
     {
       duration: 0.12,

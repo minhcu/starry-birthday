@@ -13,7 +13,7 @@ import { initSound } from "./components/sound";
 import { mouse, raycaster } from "./components/raycaster";
 
 const minScrollProgress = -0.6683333523273476;
-const maxScrollProgress = 10.84;
+const maxScrollProgress = 11.84;
 let scrollProgress = minScrollProgress;
 let touchStartY = 0;
 
@@ -139,6 +139,9 @@ function openPopup(plane: any) {
 }
 
 let currentIntersect: CustomMesh | null = null;
+import confetti from "canvas-confetti";
+let isCelebrate = false;
+const celebrate = document.querySelector<HTMLDivElement>(".celebrate")!
 function animate() {
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(groupPlanes.children);
@@ -151,6 +154,29 @@ function animate() {
   } else {
     currentIntersect = null;
     document.body.style.cursor = "auto";
+  }
+
+  if (scrollProgress > 10.8) isCelebrate = true;
+  else isCelebrate = false;
+
+  if (isCelebrate) {
+    celebrate.style.display = "block";
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: ["#1363DF", "#F86F03", "#FAC72A"],
+    });
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: ["#1363DF", "#F86F03", "#FAC72A"],
+    });
+  } else {
+    celebrate.style.display = "none";
   }
 
   controls.update();

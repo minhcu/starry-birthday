@@ -45,6 +45,7 @@ const planeGeometry = new PlaneGeometry(2, 1.13, 32, 32)
 class CustomMesh extends Mesh<PlaneGeometry, ShaderMaterial> {
   customUrl?: string;
   isLoaded?: boolean;
+  planeIndex?: number;
 }
 articles.forEach(article => {
   const image = textureLoader.load(article.image)
@@ -70,7 +71,8 @@ articles.forEach(article => {
   text.text = article.title;
   text.fontSize = 0.1;
   text.scale.x = -1;
-  text.color = '#fff'
+  text.color = '#fff';
+  text.font = './fonts/Itim-Regular.ttf';
   text.material = new MeshBasicMaterial({ 
     side: DoubleSide,
     transparent: true,

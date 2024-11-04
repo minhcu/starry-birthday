@@ -44,6 +44,7 @@ const planeGeometry = new PlaneGeometry(2, 1.13, 32, 32)
 
 class CustomMesh extends Mesh<PlaneGeometry, ShaderMaterial> {
   customUrl?: string;
+  isLoaded?: boolean;
 }
 articles.forEach(article => {
   const image = textureLoader.load(article.image)
@@ -78,7 +79,7 @@ articles.forEach(article => {
   groupTexts.add(text);
 });
 
-function updateTextOpacity(text: any) {
+function updateTextOpacity(text: any, plane: any) {
   const beginCoors = {
     x: 1.2,
     y: 0.21,
@@ -93,12 +94,18 @@ function updateTextOpacity(text: any) {
       duration: 0.15,
       opacity: 1,
       ease: Power1.easeInOut,
+      onComplete: () => {
+        plane.isLoaded = true;
+      }
     })
   } else {
     gsap.to(text.material[1], {
       duration: 0.15,
       opacity: 0,
       ease: Power1.easeInOut,
+      onComplete: () => {
+        plane.isLoaded = false;
+      }
     })
   }
 }
@@ -116,7 +123,7 @@ function updatePlanesPosition(scrollProgress: number) {
     const text = groupTexts.children[index];
     text.position.set(x, y, z + 0.6);
     text.lookAt(0, y, 0);
-    updateTextOpacity(text);
+    updateTextOpacity(text, plane);
   });
 }
 updatePlanesPosition(-0.6683333523273476);
@@ -171,9 +178,8 @@ window.addEventListener("mousemove", (event) => {
   mouse.y = - (event.clientY / canvasSize.height) * 2 + 1;
 })
 
-// TODO: Open the active article only
 window.addEventListener("click", () => {
-  if (currentIntersect) {
+  if (currentIntersect && currentIntersect.isLoaded) {
     window.open(currentIntersect.customUrl, "_blank");
   }
 })
@@ -182,10 +188,11 @@ let currentIntersect: CustomMesh | null = null;
 function animate() {
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(groupPlanes.children);
-  if (intersects.length) {
+  if (intersects.length && intersects) {
     if (currentIntersect !== intersects[0].object) {
       currentIntersect = intersects[0].object as CustomMesh;
-      document.body.style.cursor = "pointer";
+      if (currentIntersect.isLoaded) document.body.style.cursor = "pointer";
+      else document.body.style.cursor = "auto";
     }
   } else {
     currentIntersect = null;

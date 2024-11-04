@@ -54,7 +54,9 @@ articles.forEach(article => {
     fragmentShader: fragment,
     uniforms: {
       uTime: { value: 0 },
+      // TODO: Black and white animation
       uTouch: { value: 0 },
+      // TODO: Open article on click
       uTexture: { value: image },
     }
   });
@@ -161,8 +163,8 @@ window.addEventListener("touchmove", async (event) => {
 });
 
 window.addEventListener("resize", () => {
-  canvasSize.width = window.innerWidth;
-  canvasSize.height = window.innerHeight;
+  canvasSize.width = window.outerWidth;
+  canvasSize.height = window.outerHeight;
   camera.aspect = canvasSize.width / canvasSize.height;
   camera.updateProjectionMatrix();
   renderer.setSize(canvasSize.width, canvasSize.height);

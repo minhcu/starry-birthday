@@ -145,6 +145,7 @@ let touchStartY = 0;
 window.addEventListener("wheel", (event) => {
   scrollProgress += event.deltaY * 0.001;
   if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
+  if (scrollProgress >= maxScrollProgress) scrollProgress = maxScrollProgress;
   updatePlanesPosition(scrollProgress);
 });
 
@@ -163,8 +164,8 @@ window.addEventListener("touchmove", async (event) => {
       duration: 0.12,
       onUpdate: () => {
         scrollProgress -= touchDeltaY * 0.00005;
-        if (scrollProgress <= minScrollProgress)
-          scrollProgress = minScrollProgress;
+        if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
+        if (scrollProgress >= maxScrollProgress) scrollProgress = maxScrollProgress;
         updatePlanesPosition(scrollProgress);
       },
       onComplete: () => {

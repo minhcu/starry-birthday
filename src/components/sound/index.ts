@@ -24,7 +24,6 @@ export function initSound() {
         audioLoader.load("./song/song.mp3", function (buffer) {
           isMusicLoaded = true;
           if (sound) {
-            console.log(buffer)
             sound.setBuffer(buffer);
             sound.setLoop(true);
             sound.setVolume(1);

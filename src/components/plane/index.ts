@@ -106,7 +106,7 @@ function updatePlanesPosition(scrollProgress: number) {
 }
 
 function updatePlanesRect() {
-  const ratio = document.body.clientWidth / 767;
+  const ratio = document.body.clientWidth / 640;
   if (ratio > 1) return;
   groupPlanes.children.forEach((plane, index) => {
     plane.scale.set(-ratio, ratio, ratio);

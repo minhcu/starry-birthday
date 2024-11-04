@@ -1,27 +1,34 @@
 import { Audio, AudioListener, AudioLoader } from "three";
 import { gsap, Power1 } from "gsap";
-
-export const listener = new AudioListener();
-
-export const sound = new Audio(listener);
-
-export const audioLoader = new AudioLoader();
+import camera from "../camera";
 
 export function initSound() {
   let isMusicLoaded = false;
   let isMusicPlaying = false;
+  
+  let listener: AudioListener | undefined = undefined;
+  let sound: Audio | undefined = undefined;
+  let audioLoader: AudioLoader | undefined = undefined;
   document
-    .querySelector<HTMLDivElement>(".audio")!
-    .addEventListener("click", () => {
+  .querySelector<HTMLDivElement>(".audio")!
+  .addEventListener("click", () => {
       const play = document.querySelector<HTMLDivElement>(".play")!;
       const pause = document.querySelector<HTMLDivElement>(".pause")!;
+      if (!audioLoader) audioLoader = new AudioLoader();
+      if (!listener) {
+        listener = new AudioListener();
+        camera.add(listener);
+      }
+      if (!sound) sound = new Audio(listener);
       if (!isMusicLoaded) {
         audioLoader.load("./song/song.mp3", function (buffer) {
           isMusicLoaded = true;
-          sound.setBuffer(buffer);
-          sound.setLoop(true);
-          sound.setVolume(1);
-
+          if (sound) {
+            console.log(buffer)
+            sound.setBuffer(buffer);
+            sound.setLoop(true);
+            sound.setVolume(1);
+          }
           gsap
             .timeline()
             .to(play, {
@@ -32,7 +39,7 @@ export function initSound() {
               },
               ease: Power1.easeIn,
               onComplete: () => {
-                sound.play();
+                if (sound) sound.play();
               },
             })
             .to(pause, {
@@ -60,7 +67,7 @@ export function initSound() {
             },
             ease: Power1.easeIn,
             onComplete: () => {
-              sound.play();
+              sound && sound.play();
             },
           })
           .to(pause, {
@@ -85,7 +92,7 @@ export function initSound() {
             },
             ease: Power1.easeOut,
             onComplete: () => {
-              sound.pause();
+              sound && sound.pause();
             },
           })
           .to(play, {
@@ -101,4 +108,6 @@ export function initSound() {
           });
       }
     });
+
+  return listener;
 }

@@ -184,6 +184,8 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+animate();
+
 let isStart = false;
 window.addEventListener("DOMContentLoaded", () => {
   initSound();

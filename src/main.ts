@@ -1,10 +1,11 @@
 import "./style.css"
-import { Scene, WebGLRenderer, LoadingManager, MeshBasicMaterial } from "three"
+import { Scene, WebGLRenderer, MeshBasicMaterial } from "three"
 import { canvasSize } from "./constants"
 import camera from "./components/camera";
 import { ambientLight, pointLight, directionalLight } from "./components/light";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { gsap, Power1 } from "gsap";
+import { textureLoader, gltfLoader } from "./components/loader";
 
 const scene = new Scene();
 const renderer = new WebGLRenderer({
@@ -18,30 +19,6 @@ renderer.setPixelRatio(window.devicePixelRatio || 2);
 renderer.setSize(canvasSize.width, canvasSize.height);
 controls.enableZoom = false;
 controls.enabled = false;
-
-const canvas = document.querySelector<HTMLCanvasElement>("#canvas")!;
-const loadingManager = new LoadingManager(
-  () => {
-    setTimeout(() => {
-      gsap.from(camera.position, {
-        duration: 1.5,
-        x: -30,
-        y: 20,
-        z: -10,
-        ease: Power1.easeOut,
-      })
-      gsap.from(canvas, {
-        duration: 2,
-        css: { opacity: 0 },
-        ease: Power1.easeInOut,
-      })
-    }, 50);
-  }
-);
-import { TextureLoader } from "three";
-const textureLoader = new TextureLoader(loadingManager);
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
-const gltfLoader = new GLTFLoader(loadingManager);
 
 textureLoader.load('./images/background.jpg', (texture) => {
   scene.background = texture;

@@ -36,7 +36,7 @@ header {
   justify-content: space-between;
   width: 100%;
   padding: 2.5rem 2.5rem 0 2.5rem;
-  z-index: 2;
+  z-index: 5;
   will-change: transform;
 }
 header img {
@@ -49,7 +49,7 @@ header img {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 4;
+  z-index: 1;
 }
 .landing {
   position: absolute;
@@ -62,9 +62,6 @@ header img {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  /* TODO: Remove later */
-  display: none;
 }
 .content {
   padding: 3.75rem 2.5rem 0;
@@ -84,4 +81,77 @@ header img {
   width: 100%;
   background: #000;
   transform-origin: 0 0;
+}
+
+/* LOADING */
+.loading {
+  background: #faf9f3;
+  z-index: 4;
+  flex-direction: column;
+}
+.loading-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 2.5rem 2.5rem;
+  z-index: 4;
+}
+.loading-footer p {
+  color: #000;
+  text-align: center;
+}
+
+.loading-content {
+  position: relative;
+  width: 360px;
+  height: 360px;
+}
+.loading-content div {
+  overflow: hidden;
+  position: relative;
+}
+.loading-content > img{
+  filter: contrast(0);
+}
+.loading-content div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 360px;
+  height: 0;
+  transition: all 0.5s ease;
+}
+.loadingtext span {
+  display: inline-block;
+  animation: loading 1.2s infinite;
+}
+.loadingtext span:nth-child(1) {
+  animation-delay: 0s;
+}
+.loadingtext span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loadingtext span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.loadingtext span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.loadingtext span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+.loadingtext span:nth-child(6) {
+  animation-delay: 1s;
+}
+@keyframes loading {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }

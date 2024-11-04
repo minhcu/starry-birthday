@@ -47,7 +47,7 @@ class CustomMesh extends Mesh<PlaneGeometry, ShaderMaterial> {
   isLoaded?: boolean;
   planeIndex?: number;
 }
-articles.forEach((article) => {
+articles.forEach((article, index) => {
   const image = textureLoader.load(article.image);
   const material = new ShaderMaterial({
     side: DoubleSide,
@@ -64,6 +64,7 @@ articles.forEach((article) => {
 
   const plane: CustomMesh = new CustomMesh(planeGeometry, material);
   plane.customUrl = article.url;
+  plane.planeIndex = index;
   plane.scale.x = -1;
   groupPlanes.add(plane);
 
@@ -143,6 +144,7 @@ let scrollProgress = minScrollProgress;
 let touchStartY = 0;
 
 window.addEventListener("wheel", (event) => {
+  if (isPopupOpen) return;
   scrollProgress += event.deltaY * 0.001;
   if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
   if (scrollProgress >= maxScrollProgress) scrollProgress = maxScrollProgress;
@@ -156,6 +158,7 @@ window.addEventListener("touchstart", (event) => {
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 window.addEventListener("touchmove", (event) => {
+  if (isPopupOpen) return;
   const touchCurrentY = event.touches[0].clientX;
   const touchDeltaY = touchCurrentY - touchStartY;
   gsap.to(
@@ -173,7 +176,7 @@ window.addEventListener("touchmove", (event) => {
       },
     }
   );
-});
+}, { passive: false }); // Set passive to false to allow preventDefault
 
 function updatePlanesRect() {
   const ratio = document.body.clientWidth / 800;
@@ -205,10 +208,45 @@ window.addEventListener("mousemove", (event) => {
   mouse.y = -(event.clientY / canvasSize.height) * 2 + 1;
 });
 
-window.addEventListener("click", () => {
-  if (currentIntersect && currentIntersect.isLoaded) {
-    window.open(currentIntersect.customUrl, "_blank");
-  }
+const popup = document.querySelector<HTMLDivElement>(".explore-overlay")!;
+popup.querySelector<HTMLDivElement>(".close")!.addEventListener("click", () => {
+  gsap.to(popup, {
+    duration: 0.2,
+    opacity: 0,
+    ease: Power1.easeOut,
+    onComplete: () => {
+      isPopupOpen = false;
+      popup.style.display = "none";
+    },
+  });
+});
+popup.querySelector<HTMLDivElement>(".overlay-background")!.addEventListener("click", () => {
+  gsap.to(popup, {
+    duration: 0.2,
+    opacity: 0,
+    ease: Power1.easeOut,
+    onComplete: () => {
+      isPopupOpen = false;
+      popup.style.display = "none";
+    },
+  });
+});
+import { popupTemplate } from "./constants";
+
+let isPopupOpen = false;
+function openPopup(plane: any) {
+  isPopupOpen = true;
+  popup.style.display = "block";
+  popup.style.opacity = "1";
+  popup.querySelector<HTMLDivElement>(".overlay-content-wrapper")!.innerHTML = popupTemplate(plane.planeIndex!);
+  popup.querySelector<HTMLAnchorElement>(".more")!.href = plane.customUrl!;
+}
+window.addEventListener("click", (event) => {
+  mouse.x = (event.clientX / canvasSize.width) * 2 - 1;
+  mouse.y = -(event.clientY / canvasSize.height) * 2 + 1;
+  animate();
+  if (isPopupOpen) return;
+  if (currentIntersect && currentIntersect.isLoaded) openPopup(currentIntersect);
 });
 
 let currentIntersect: CustomMesh | null = null;

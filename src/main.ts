@@ -163,8 +163,8 @@ window.addEventListener("touchmove", async (event) => {
 });
 
 window.addEventListener("resize", () => {
-  canvasSize.width = window.outerWidth;
-  canvasSize.height = window.outerHeight;
+  canvasSize.width = window.innerWidth;
+  canvasSize.height = window.innerHeight;
   camera.aspect = canvasSize.width / canvasSize.height;
   camera.updateProjectionMatrix();
   renderer.setSize(canvasSize.width, canvasSize.height);

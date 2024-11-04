@@ -12,8 +12,8 @@ const HTML = `
         </p>
         <div class="statement-button">
             <a href="#">
-            <span>Bắt đầu hành trình</span>
-            <span class="line"></span>
+            <span>-> Bắt đầu hành trình <-</span>
+            <span class="statement-divider" style="transform-origin: right; transform: scale(0.44, 1);"></span>
             </a>
         </div>
     </div>

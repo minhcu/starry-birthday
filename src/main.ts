@@ -47,7 +47,7 @@ gltfLoader.load("./models/s-logo.glb", (gltf) => {
 updatePlanesPosition(minScrollProgress);
 
 window.addEventListener("wheel", (event) => {
-  if (isPopupOpen) return;
+  if (isPopupOpen || !isStart) return;
   scrollProgress += event.deltaY * 0.001;
   if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;
   if (scrollProgress >= maxScrollProgress) scrollProgress = maxScrollProgress;

@@ -2,7 +2,6 @@ import "./style.css";
 import { Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { gsap, Power1 } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import camera from "./components/camera";
 import { canvasSize } from "./constants";
@@ -23,7 +22,6 @@ const renderer = new WebGLRenderer({
 });
 const controls = new OrbitControls(camera, renderer.domElement);
 
-gsap.registerPlugin(ScrollTrigger);
 scene.add(ambientLight, pointLight, directionalLight, directionalLight.target);
 scene.add(camera);
 scene.add(groupPlanes, groupTexts);

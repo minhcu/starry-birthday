@@ -1,8 +1,3 @@
-@font-face {
-  font-family: 'Montserrat';
-  src: url(../fonts/Montserrat-Regular.ttf) format('truetype');
-  font-weight: 400;
-}
 *, *:before, *:after {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -400,7 +395,7 @@ footer p {
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
-  -webkit-text-stroke: 3px #fff;
+  -webkit-text-stroke: 2px #fff;
 }
 .audio .loader,
 .audio.loading::before {

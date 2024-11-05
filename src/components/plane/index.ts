@@ -50,7 +50,7 @@ articles.forEach((article, index) => {
     transparent: true,
     opacity: 0,
   });
-  text.outlineColor = "#1363DF";
+  text.outlineColor = "#28336e";
   text.outlineWidth = 0.009;
   groupTexts.add(text);
 });

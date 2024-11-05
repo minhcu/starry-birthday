@@ -50,6 +50,13 @@ const loadingManager = new LoadingManager(
         duration: 1.5,
         css: { opacity: 1 },
         delay: 0.25,
+        onStart: () => {
+          gsap.to(document.querySelector<HTMLButtonElement>('.audio'), {
+            duration: 1.5,
+            css: { opacity: 1, scale: 1 },
+            delay: 0.25,
+          })
+        }
       });
   },
   (_, loaded, total) => {

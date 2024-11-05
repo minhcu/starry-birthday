@@ -77,8 +77,7 @@ window.addEventListener("touchmove", (event) => {
       },
     }
   );
-}, { passive: false }); // Set passive to false to allow preventDefault
-
+}, { passive: false });
 
 updatePlanesRect();
 window.addEventListener("resize", () => {

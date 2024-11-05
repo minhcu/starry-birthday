@@ -65,7 +65,8 @@ window.addEventListener("touchmove", (event) => {
   gsap.to(
     {},
     {
-      duration: 0.12,
+      duration: 0.2,
+      ease: Power1.easeInOut,
       onUpdate: () => {
         scrollProgress -= touchDeltaY * 0.00005;
         if (scrollProgress <= minScrollProgress) scrollProgress = minScrollProgress;

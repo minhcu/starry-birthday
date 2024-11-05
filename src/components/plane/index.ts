@@ -38,7 +38,7 @@ articles.forEach((article, index) => {
 
   const text = new Text();
   text.text = article.title;
-  text.fontSize = 0.09;
+  text.fontSize = 0.07;
   text.scale.x = -1;
   text.anchorX = "center";
   text.anchorY = "middle"

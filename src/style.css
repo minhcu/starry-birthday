@@ -185,6 +185,7 @@ footer {
           align-items: center;
 }
 footer p {
+  width: 100%;
   position: absolute;
   left: 50%;
   -webkit-transform: translate(-50%, 0);

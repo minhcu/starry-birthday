@@ -40,14 +40,17 @@ articles.forEach((article, index) => {
   text.text = article.title;
   text.fontSize = 0.1;
   text.scale.x = -1;
+  text.anchorX = "center";
+  text.anchorY = "top"
+  text.textAlign = "center";
   text.color = "#fff";
-  text.font = "./fonts/Itim-Regular.ttf";
+  text.font = "./fonts/Montserrat-Regular.ttf";
   text.material = new MeshBasicMaterial({
     side: DoubleSide,
     transparent: true,
     opacity: 0,
   });
-  text.outlineColor = "#000";
+  text.outlineColor = "#1363DF";
   text.outlineWidth = 0.01;
   groupTexts.add(text);
 });
@@ -99,7 +102,7 @@ function updatePlanesPosition(scrollProgress: number) {
     plane.lookAt(0, y, 0);
 
     const text = groupTexts.children[index];
-    text.position.set(x, y, z + 0.6);
+    text.position.set(x, y - 0.2, z + 0.6);
     text.lookAt(0, y, 0);
     updateTextOpacity(text, plane);
   });

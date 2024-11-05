@@ -2,7 +2,7 @@ import "./style.css";
 import { Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { gsap, Power1 } from "gsap";
-
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import camera from "./components/camera";
 import { canvasSize } from "./constants";
 import { ambientLight, pointLight, directionalLight } from "./components/light";
@@ -15,6 +15,7 @@ const minScrollProgress = -0.6683333523273476;
 const maxScrollProgress = 11.84;
 let scrollProgress = minScrollProgress;
 let touchStartY = 0;
+gsap.registerPlugin(ScrollTrigger);
 
 const scene = new Scene();
 const renderer = new WebGLRenderer({

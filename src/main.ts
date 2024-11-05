@@ -165,14 +165,14 @@ function animate() {
       angle: 60,
       spread: 55,
       origin: { x: 0 },
-      colors: ["#1363DF", "#F86F03", "#FAC72A"],
+      colors: ["#1363DF", "#F86F03"],
     });
     confetti({
       particleCount: 3,
       angle: 120,
       spread: 55,
       origin: { x: 1 },
-      colors: ["#1363DF", "#F86F03", "#FAC72A"],
+      colors: ["#1363DF", "#F86F03"],
     });
   } else {
     celebrate.style.display = "none";

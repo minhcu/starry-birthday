@@ -38,10 +38,10 @@ articles.forEach((article, index) => {
 
   const text = new Text();
   text.text = article.title;
-  text.fontSize = 0.1;
+  text.fontSize = 0.09;
   text.scale.x = -1;
   text.anchorX = "center";
-  text.anchorY = "top"
+  text.anchorY = "middle"
   text.textAlign = "center";
   text.color = "#fff";
   text.font = "./fonts/Montserrat-Regular.ttf";
@@ -51,7 +51,7 @@ articles.forEach((article, index) => {
     opacity: 0,
   });
   text.outlineColor = "#1363DF";
-  text.outlineWidth = 0.01;
+  text.outlineWidth = 0.009;
   groupTexts.add(text);
 });
 

@@ -18,7 +18,7 @@ export const articles = [
     content: "S-Group đã có cơ hội cùng anh Trang Lê Hà Nam có một buổi chia sẻ và trò chuyện cùng với các bạn thành viên chuyên môn Marketing Online tại S-Group nói riêng và các bạn trẻ có đam mê với lĩnh vực Marketing nói chung."
   },
   {
-    title: "Future Ctrl\nS-Group chính thức\ntuyển thành viên\nkhoá mùa đông 2023",
+    title: "Future Ctrl\nS-Group tuyển thành viên\nkhoá mùa đông 2023",
     image: "./images/image-4.jpg",
     url: "https://www.facebook.com/share/p/chPguL8gWveSPCMN/",
     content: "S-Group đã tổ chức buổi gặp mặt các ứng viên ưu tú của Khóa mùa Đông 2023. Những ứng viên này đã trở thành những thành viên tuyệt vời của S-Group và cùng nhau phát triển cùng nhau trong suốt quá trình học tập và làm việc."
